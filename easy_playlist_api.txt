@@ -37,8 +37,7 @@ function playSong(Index:number) {
     if(I <= SongsLinks:count()) {
         stopAllTimers() # Stop any running timer (music end check)
         print("Playing " + SongsNames[I, string]) # Say music name
-        entity():streamStart(1, SongsLinks[I, string]) # Play music
-        streamVolume(1, Vol) # Set the volume
+        entity():streamStart(1, SongsLinks[I, string], Vol) # Play music
         timer("music", SongsTimes[I, number] * 1000) # Start the timer to check if music ends
         CurSong = I # Save the current song in a var
     }
