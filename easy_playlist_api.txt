@@ -1,0 +1,77 @@
+###################
+#     Xoverse     #
+#  Easy PlayList  #
+#       1_a       #
+#  by Evil Buddy  #
+###################
+#  ? play         #
+#   play songs    #
+#  ? stop         #
+#   stop playing  #
+#  ? list         #
+#   songs list    #
+###################
+# addSong(s,n,s)  #
+#  Name           #
+#  Duration       #
+#  Link           #
+#   add a song to #
+#   the playlist  #
+###################
+
+@persist SongsNames:array SongsTimes:array SongsLinks:array # Three arays to store songs
+@persist CurSong:number Offset:number # Vars used to loop through the playlist
+
+# Simple function to add songs using arrays
+function addSong(URI:string, Duration:number, URL:string) {
+    SongsNames:pushString(URI)
+    SongsTimes:pushNumber(Duration)
+    SongsLinks:pushString(URL)
+}
+
+# Simple function to play songs using arrays and e:streamStart()
+function playSong(Index:number) {
+    I = Index # Makes the index uses the E2 array index format (starting from 0)
+    
+    # Check if the index is valid (using links)
+    if(I <= SongsLinks:count()) {
+        stopAllTimers() # Stop any running timer (music end check)
+        print("Playing " + SongsNames[I, string]) # Say music name
+        entity():streamStart(1, SongsLinks[I, string]) # Play music
+        timer("music", SongsTimes[I, number] * 1000) # Start the timer to check if music ends
+        CurSong = I # Save the current song in a var
+    }
+    else {
+        print("Invalid index !") # Say if the index is invalid
+    }
+}
+
+if(first()) {
+    # Loop
+    runOnChat(1)
+}
+
+# Called when music finished
+if(clk("music")) {
+    # Check if the playlist if finished
+    if(CurSong == SongsLinks:count()) {
+        Offset = -(SongsLinks:count() - 1) # Set the offset to return to the first song
+    }
+    else {
+        Offset = +1 # Set the offset to go to the next song
+    }
+    
+    streamStop(1) # Stop any current song
+    timer("offset", 30) # Offset to play the next song
+}
+
+# Called when the song playing offset finishes
+if(clk("offset")) {
+    # Check if next song can play
+    if(streamCanStart()) {
+        playSong(CurSong + Offset) # Play the next song
+    }
+    else {
+        timer("offset", 30) # Add more offset
+    }
+}

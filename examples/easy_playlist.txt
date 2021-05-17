@@ -1,0 +1,66 @@
+@name Easy PlayList [1a]
+@model models/cheeze/wires/speaker.mdl
+#include "e2shared/easy_playlist_api"
+
+###################
+#     Xoverse     #
+#  Easy PlayList  #
+#     beta-1a     #
+#  by Evil Buddy  #
+###################
+#  ? play         #
+#   play songs    #
+#  ? stop         #
+#   stop playing  #
+#  ? list         #
+#   songs list    #
+###################
+# addSong(s,n,s)  #
+#  Name           #
+#  Duration       #
+#  Link           #
+#   add a song to #
+#   the playlist  #
+###################
+
+if(first()) {
+    #Songs
+    addSong("Allah, Syria and Bashar", 215, "https://media.vocaroo.com/mp3/1jCtfh74Dk55")
+}
+
+# Commands handler
+if(chatClk(owner())) {
+    # Saves the owner's last chat message in a simple var
+    C = owner():lastSaid()
+    
+    # Check the prefix
+    if(C:sub(0, 2) == "? ") {
+        # Saves the command without the prefix in a simple var
+        CMD = C:sub(3):lower()
+        
+        # Play command
+        if(CMD == "play") {
+            # Gets the song ID and play it
+            playSong(CMD:sub(6):toNumber())
+        }
+        
+        # Stop command
+        if(CMD == "stop") {
+            streamStop(1) # Stop the current song
+            stopAllTimers() # Stop any running timer (music end check)
+        }
+        
+        # List command
+        if(CMD == "list") {
+            K = 0 # Var used in the loop
+            
+            # Loop to get all the songs
+            for(K = 0, K <= SongsLinks:count()) {
+                F = K + 1 # Modifies the var for the E2 array index format
+                print(F:toString() + " - " + SongsNames[F, string]) # Print the index and title
+            }
+        }
+        
+        hideChat(1)
+    }
+}
