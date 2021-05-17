@@ -1,7 +1,7 @@
 ###################
 #     Xoverse     #
 #  Easy PlayList  #
-#       1_a       #
+#       1_b       #
 #  by Evil Buddy  #
 ###################
 #  ? play         #
@@ -20,16 +20,16 @@
 ###################
 
 @persist SongsNames:array SongsTimes:array SongsLinks:array # Three arays to store songs
-@persist CurSong:number Offset:number # Vars used to loop through the playlist
+@persist CurSong:number Offset:number Vol:number # Vars used to loop through the playlist
 
-# Simple function to add songs using arrays
+# Function to add songs using arrays
 function addSong(URI:string, Duration:number, URL:string) {
     SongsNames:pushString(URI)
     SongsTimes:pushNumber(Duration)
     SongsLinks:pushString(URL)
 }
 
-# Simple function to play songs using arrays and e:streamStart()
+# Function to play songs using arrays and e:streamStart()
 function playSong(Index:number) {
     I = Index # Makes the index uses the E2 array index format (starting from 0)
     
@@ -38,12 +38,19 @@ function playSong(Index:number) {
         stopAllTimers() # Stop any running timer (music end check)
         print("Playing " + SongsNames[I, string]) # Say music name
         entity():streamStart(1, SongsLinks[I, string]) # Play music
+        streamVolume(1, Vol) # Set the volume
         timer("music", SongsTimes[I, number] * 1000) # Start the timer to check if music ends
         CurSong = I # Save the current song in a var
     }
     else {
         print("Invalid index !") # Say if the index is invalid
     }
+}
+
+# Function to set the volume
+function setVolume(Volume:number) {
+    Vol = Volume / 100
+    streamVolume(1, Vol)
 }
 
 if(first()) {
