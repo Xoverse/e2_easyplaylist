@@ -1,2 +1,2 @@
 # e2_easyplaylist
-A simple playlist systeam for Wiremod's Expression 2 in Garry's Mod.
+EasyPlayList est une API pour l'Expression 2 de Wiremod dans Garry's Mod.
